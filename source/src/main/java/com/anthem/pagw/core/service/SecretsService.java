@@ -57,7 +57,7 @@ public class SecretsService {
         try {
             JsonNode node = objectMapper.readTree(secretJson);
             return DatabaseCredentials.builder()
-                    .username(node.get("username").asText())
+                    .username(node.get("user").asText())
                     .password(node.get("password").asText())
                     .host(node.has("host") ? node.get("host").asText() : null)
                     .port(node.has("port") ? node.get("port").asInt() : 5432)
