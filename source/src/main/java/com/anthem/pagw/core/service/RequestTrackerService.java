@@ -540,4 +540,14 @@ public class RequestTrackerService {
         
         return tracker;
     }
+    
+    /**
+     * Get the underlying JdbcTemplate for direct SQL execution.
+     * Used by microservices for custom queries not yet in the core service.
+     * 
+     * @return The JdbcTemplate
+     */
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
 }
