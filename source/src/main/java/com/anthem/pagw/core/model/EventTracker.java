@@ -92,10 +92,10 @@ public class EventTracker {
     public static final String EVENT_CONVERT_OK = "CONVERT_OK";
     public static final String EVENT_CONVERT_FAIL = "CONVERT_FAIL";
     
-    // API Connector events
-    public static final String EVENT_SUBMIT_START = "SUBMIT_START";
-    public static final String EVENT_SUBMIT_OK = "SUBMIT_OK";
-    public static final String EVENT_SUBMIT_FAIL = "SUBMIT_FAIL";
+    // API Connector events (downstream external API calls)
+    public static final String EVENT_DOWNSTREAM_START = "DOWNSTREAM_START";
+    public static final String EVENT_DOWNSTREAM_OK = "DOWNSTREAM_OK";
+    public static final String EVENT_DOWNSTREAM_FAIL = "DOWNSTREAM_FAIL";
     public static final String EVENT_DOWNSTREAM_TIMEOUT = "DOWNSTREAM_TIMEOUT";
     public static final String EVENT_DOWNSTREAM_ERROR = "DOWNSTREAM_ERROR";
     
@@ -108,6 +108,11 @@ public class EventTracker {
     public static final String EVENT_CALLBACK_START = "CALLBACK_START";
     public static final String EVENT_CALLBACK_OK = "CALLBACK_OK";
     public static final String EVENT_CALLBACK_FAIL = "CALLBACK_FAIL";
+    
+    // Subscription Handler events
+    public static final String EVENT_NOTIFY_START = "NOTIFY_START";
+    public static final String EVENT_NOTIFY_OK = "NOTIFY_OK";
+    public static final String EVENT_NOTIFY_FAIL = "NOTIFY_FAIL";
     
     // Status constants
     public static final String STATUS_STARTED = "STARTED";

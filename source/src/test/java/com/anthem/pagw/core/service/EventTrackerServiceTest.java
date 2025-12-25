@@ -232,7 +232,7 @@ class EventTrackerServiceTest {
         // Mock failed retryable events
         List<EventTracker> mockEvents = Arrays.asList(
                 createFailedRetryableEvent(PAGW_ID, EventTracker.EVENT_DOWNSTREAM_TIMEOUT),
-                createFailedRetryableEvent("PAGW-20251225-00002-TEST5678", EventTracker.EVENT_SUBMIT_FAIL)
+                createFailedRetryableEvent("PAGW-20251225-00002-TEST5678", EventTracker.EVENT_DOWNSTREAM_FAIL)
         );
         
         when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(tenant)))
