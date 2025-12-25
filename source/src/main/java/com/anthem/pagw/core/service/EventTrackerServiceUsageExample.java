@@ -86,7 +86,9 @@ public class EventTrackerServiceUsageExample {
                 String.format("{\"externalId\":\"EXT-123\"}")
             );
             
-        } catch (TimeoutException e) {
+        } catch (Exception e) {
+            // Check if it's a timeout (retryable)
+            if (e.getClass().getSimpleName().contains("Timeout")) {
             // Retryable error - log with retry info
             java.time.Instant nextRetry = java.time.Instant.now()
                 .plus(5, java.time.temporal.ChronoUnit.MINUTES);
@@ -104,8 +106,8 @@ public class EventTrackerServiceUsageExample {
             
             // Send to DLQ or retry queue
             
-        } catch (ValidationException e) {
-            // Non-retryable error
+        } else {
+            // Non-retryable error (e.g., validation)
             eventTrackerService.logStageError(
                 pagwId, 
                 tenant, 
@@ -117,16 +119,22 @@ public class EventTrackerServiceUsageExample {
                 null
             );
             throw e;
+            }
         }
     }
     
     /**
      * Example: SQS Listener pattern (apply to all 10 services)
+     * 
+     * Note: @SqsListener annotation from Spring Cloud AWS
+     * PagwMessage from com.anthem.pagw.core.model.PagwMessage
      */
-    @SqsListener(queueName = "PAS_REQUEST_PARSER")
-    public void onParseRequest(PagwMessage message) {
-        String pagwId = message.getPagwId();
-        String tenant = message.getTenant();
+    // @SqsListener(queueName = "PAS_REQUEST_PARSER")
+    public void onParseRequest(Object message) {
+        // Cast to PagwMessage in actual implementation
+        // PagwMessage msg = (PagwMessage) message;
+        String pagwId = "PAGW-EXAMPLE"; // msg.getPagwId();
+        String tenant = "elevance";     // msg.getTenant();
         
         // Log event start
         long seqNo = eventTrackerService.logStageStart(
@@ -140,7 +148,7 @@ public class EventTrackerServiceUsageExample {
         
         try {
             // Process message
-            parseBundle(message);
+            // parseBundle(message);
             
             // Log success
             long duration = System.currentTimeMillis() - startTime;
