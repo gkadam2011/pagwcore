@@ -114,6 +114,11 @@ public class EventTracker {
     public static final String EVENT_NOTIFY_OK = "NOTIFY_OK";
     public static final String EVENT_NOTIFY_FAIL = "NOTIFY_FAIL";
     
+    // Outbox Publisher events
+    public static final String EVENT_PUBLISH_START = "PUBLISH_START";
+    public static final String EVENT_PUBLISH_OK = "PUBLISH_OK";
+    public static final String EVENT_PUBLISH_FAIL = "PUBLISH_FAIL";
+    
     // Status constants
     public static final String STATUS_STARTED = "STARTED";
     public static final String STATUS_SUCCESS = "SUCCESS";
