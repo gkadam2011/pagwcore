@@ -542,6 +542,25 @@ public class RequestTrackerService {
     }
     
     /**
+     * Update extracted FHIR data fields (diagnosis codes).
+     * Called after FHIR extraction in parser service.
+     * 
+     * @param pagwId The PAGW ID
+     * @param diagnosisCodesJson JSON array of diagnosis codes
+     */
+    @Transactional
+    public void updateDiagnosisCodes(String pagwId, String diagnosisCodesJson) {
+        String sql = """
+            UPDATE request_tracker
+            SET diagnosis_codes = ?::jsonb, updated_at = NOW()
+            WHERE pagw_id = ?
+            """;
+        
+        jdbcTemplate.update(sql, diagnosisCodesJson, pagwId);
+        log.debug("Diagnosis codes updated: pagwId={}", pagwId);
+    }
+    
+    /**
      * Get the underlying JdbcTemplate for direct SQL execution.
      * Used by microservices for custom queries not yet in the core service.
      * 
