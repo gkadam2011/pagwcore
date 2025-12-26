@@ -75,10 +75,10 @@ public class EventTrackerService {
                 tenant, pagw_id, stage, event_type, status,
                 sequence_no, attempt, retryable,
                 started_at, metadata, created_at
-            ) VALUES (?, ?, ?::pagw.event_type_enum, ?, 'STARTED', ?, 0, FALSE, NOW(), ?::jsonb, NOW())
+            ) VALUES (?, ?, ?, ?, 'STARTED', ?, 0, FALSE, NOW(), ?::jsonb, NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, eventType, "STARTED", sequenceNo, metadata);
+        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, metadata);
         
         log.debug("Event logged: pagwId={}, stage={}, eventType={}, sequenceNo={}", 
                 pagwId, stage, eventType, sequenceNo);
@@ -122,10 +122,10 @@ public class EventTrackerService {
                 tenant, pagw_id, stage, event_type, status,
                 sequence_no, attempt, retryable,
                 duration_ms, completed_at, metadata, created_at
-            ) VALUES (?, ?, ?::pagw.event_type_enum, ?, 'SUCCESS', ?, 0, FALSE, ?, NOW(), ?::jsonb, NOW())
+            ) VALUES (?, ?, ?, ?, 'SUCCESS', ?, 0, FALSE, ?, NOW(), ?::jsonb, NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, eventType, "SUCCESS", sequenceNo, durationMs, metadata);
+        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, durationMs, metadata);
         
         log.info("Stage completed: pagwId={}, stage={}, eventType={}, duration={}ms, sequenceNo={}", 
                 pagwId, stage, eventType, durationMs, sequenceNo);
@@ -174,10 +174,10 @@ public class EventTrackerService {
                 tenant, pagw_id, stage, event_type, status,
                 sequence_no, attempt, retryable, next_retry_at,
                 error_code, error_message, completed_at, created_at
-            ) VALUES (?, ?, ?::pagw.event_type_enum, ?, 'FAILURE', ?, ?, ?, ?, ?, ?, NOW(), NOW())
+            ) VALUES (?, ?, ?, ?, 'FAILURE', ?, ?, ?, ?, ?, ?, NOW(), NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, eventType, "FAILURE", sequenceNo, attempt, retryable,
+        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, attempt, retryable,
                 nextRetryAt != null ? Timestamp.from(nextRetryAt) : null, errorCode, errorMessage);
         
         log.error("Stage failed: pagwId={}, stage={}, eventType={}, errorCode={}, retryable={}, attempt={}, sequenceNo={}", 
@@ -205,10 +205,10 @@ public class EventTrackerService {
                 tenant, pagw_id, stage, event_type, status,
                 sequence_no, attempt, retryable,
                 started_at, created_at
-            ) VALUES (?, ?, ?::pagw.event_type_enum, ?, 'RETRY', ?, ?, TRUE, NOW(), NOW())
+            ) VALUES (?, ?, ?, ?, 'RETRY', ?, ?, TRUE, NOW(), NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, eventType, "RETRY", sequenceNo, attempt);
+        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, attempt);
         
         log.info("Retry attempt: pagwId={}, stage={}, eventType={}, attempt={}, sequenceNo={}", 
                 pagwId, stage, eventType, attempt, sequenceNo);
@@ -304,11 +304,11 @@ public class EventTrackerService {
             SELECT COALESCE(MAX(attempt), 0) + 1
             FROM pagw.event_tracker
             WHERE pagw_id = ?
-              AND stage = ?::pagw.event_type_enum
+              AND stage = ?
               AND event_type = ?
             """;
         
-        Integer attempt = jdbcTemplate.queryForObject(sql, Integer.class, pagwId, eventType, eventType);
+        Integer attempt = jdbcTemplate.queryForObject(sql, Integer.class, pagwId, stage, eventType);
         return attempt != null ? attempt : 0;
     }
     
