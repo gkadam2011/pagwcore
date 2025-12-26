@@ -196,4 +196,24 @@ public class S3Service {
     public String getObject(String bucket, String key) {
         return downloadString(bucket, key);
     }
+    
+    // ===== FHIR Parsed Data Helpers =====
+    
+    /**
+     * Store parsed FHIR data in S3 and return the path.
+     * Path format: parsed-data/{tenant}/{pagwId}-parsed.json
+     */
+    public String putParsedData(String bucket, String tenant, String pagwId, String parsedDataJson) {
+        String key = String.format("parsed-data/%s/%s-parsed.json", tenant, pagwId);
+        uploadString(bucket, key, parsedDataJson, "application/json");
+        return key;
+    }
+    
+    /**
+     * Retrieve parsed FHIR data from S3.
+     */
+    public String getParsedData(String bucket, String s3Path) {
+        return downloadString(bucket, s3Path);
+    }
 }
+

@@ -39,6 +39,7 @@ public class PagwMessage {
     private String payloadKey;
     private String payload;  // For small inline payloads
     private PayloadPointer payloadPointer;  // Structured payload pointer
+    private String parsedDataS3Path;  // S3 path to extracted FHIR data (ParsedFhirData JSON)
     
     // Attachment info
     private Boolean hasAttachments;
