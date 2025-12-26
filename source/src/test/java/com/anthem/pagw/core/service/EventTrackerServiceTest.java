@@ -93,6 +93,42 @@ class EventTrackerServiceTest {
     }
     
     @Test
+    void testLogStageStart_WithNullTenant_ShouldUseUnknown() {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Long.class), anyString()))
+                .thenReturn(1L);
+        
+        // Call with null tenant
+        long sequenceNo = eventTrackerService.logStageStart(
+                PAGW_ID, null, STAGE, EventTracker.EVENT_PARSE_START, null);
+        
+        assertEquals(1L, sequenceNo);
+        
+        ArgumentCaptor<Object[]> argsCaptor = ArgumentCaptor.forClass(Object[].class);
+        verify(jdbcTemplate, times(1)).update(anyString(), argsCaptor.capture());
+        
+        Object[] insertArgs = argsCaptor.getValue();
+        assertEquals("UNKNOWN", insertArgs[0], "Null tenant should be replaced with UNKNOWN");
+    }
+    
+    @Test
+    void testLogStageStart_WithBlankTenant_ShouldUseUnknown() {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Long.class), anyString()))
+                .thenReturn(1L);
+        
+        // Call with blank tenant
+        long sequenceNo = eventTrackerService.logStageStart(
+                PAGW_ID, "   ", STAGE, EventTracker.EVENT_PARSE_START, null);
+        
+        assertEquals(1L, sequenceNo);
+        
+        ArgumentCaptor<Object[]> argsCaptor = ArgumentCaptor.forClass(Object[].class);
+        verify(jdbcTemplate, times(1)).update(anyString(), argsCaptor.capture());
+        
+        Object[] insertArgs = argsCaptor.getValue();
+        assertEquals("UNKNOWN", insertArgs[0], "Blank tenant should be replaced with UNKNOWN");
+    }
+
+    @Test
     void testLogStageComplete() {
         when(jdbcTemplate.queryForObject(anyString(), eq(Long.class), anyString()))
                 .thenReturn(3L);

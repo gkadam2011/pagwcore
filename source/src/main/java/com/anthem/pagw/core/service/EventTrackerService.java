@@ -35,11 +35,19 @@ import java.util.Optional;
 public class EventTrackerService {
     
     private static final Logger log = LoggerFactory.getLogger(EventTrackerService.class);
+    private static final String DEFAULT_TENANT = "UNKNOWN";
     
     private final JdbcTemplate jdbcTemplate;
     
     public EventTrackerService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+    
+    /**
+     * Ensures tenant is never null to prevent NOT NULL constraint violations.
+     */
+    private String safeTenant(String tenant) {
+        return (tenant != null && !tenant.isBlank()) ? tenant : DEFAULT_TENANT;
     }
     
     /**
@@ -78,7 +86,7 @@ public class EventTrackerService {
             ) VALUES (?, ?, ?, ?, 'STARTED', ?, 0, FALSE, NOW(), ?::jsonb, NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, metadata);
+        jdbcTemplate.update(sql, safeTenant(tenant), pagwId, stage, eventType, sequenceNo, metadata);
         
         log.debug("Event logged: pagwId={}, stage={}, eventType={}, sequenceNo={}", 
                 pagwId, stage, eventType, sequenceNo);
@@ -125,7 +133,7 @@ public class EventTrackerService {
             ) VALUES (?, ?, ?, ?, 'SUCCESS', ?, 0, FALSE, ?, NOW(), ?::jsonb, NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, durationMs, metadata);
+        jdbcTemplate.update(sql, safeTenant(tenant), pagwId, stage, eventType, sequenceNo, durationMs, metadata);
         
         log.info("Stage completed: pagwId={}, stage={}, eventType={}, duration={}ms, sequenceNo={}", 
                 pagwId, stage, eventType, durationMs, sequenceNo);
@@ -177,7 +185,7 @@ public class EventTrackerService {
             ) VALUES (?, ?, ?, ?, 'FAILURE', ?, ?, ?, ?, ?, ?, NOW(), NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, attempt, retryable,
+        jdbcTemplate.update(sql, safeTenant(tenant), pagwId, stage, eventType, sequenceNo, attempt, retryable,
                 nextRetryAt != null ? Timestamp.from(nextRetryAt) : null, errorCode, errorMessage);
         
         log.error("Stage failed: pagwId={}, stage={}, eventType={}, errorCode={}, retryable={}, attempt={}, sequenceNo={}", 
@@ -208,7 +216,7 @@ public class EventTrackerService {
             ) VALUES (?, ?, ?, ?, 'RETRY', ?, ?, TRUE, NOW(), NOW())
             """;
         
-        jdbcTemplate.update(sql, tenant, pagwId, stage, eventType, sequenceNo, attempt);
+        jdbcTemplate.update(sql, safeTenant(tenant), pagwId, stage, eventType, sequenceNo, attempt);
         
         log.info("Retry attempt: pagwId={}, stage={}, eventType={}, attempt={}, sequenceNo={}", 
                 pagwId, stage, eventType, attempt, sequenceNo);
