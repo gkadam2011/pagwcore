@@ -93,11 +93,11 @@ public class EventTracker {
     public static final String EVENT_CONVERT_FAIL = "CONVERT_FAIL";
     
     // API Connector events (downstream external API calls)
-    public static final String EVENT_DOWNSTREAM_START = "DOWNSTREAM_START";
-    public static final String EVENT_DOWNSTREAM_OK = "DOWNSTREAM_OK";
-    public static final String EVENT_DOWNSTREAM_FAIL = "DOWNSTREAM_FAIL";
-    public static final String EVENT_DOWNSTREAM_TIMEOUT = "DOWNSTREAM_TIMEOUT";
-    public static final String EVENT_DOWNSTREAM_ERROR = "DOWNSTREAM_ERROR";
+    public static final String EVENT_API_CON_START = "API_CON_START";
+    public static final String EVENT_API_CON_OK = "API_CON_OK";
+    public static final String EVENT_API_CON_FAIL = "API_CON_FAIL";
+    public static final String EVENT_API_CON_TIMEOUT = "API_CON_TIMEOUT";
+    public static final String EVENT_API_CON_ERROR = "API_CON_ERROR";
     
     // Response Builder events
     public static final String EVENT_RESPONSE_START = "RESPONSE_START";

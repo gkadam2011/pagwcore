@@ -160,7 +160,7 @@ class EventTrackerServiceTest {
         Instant nextRetry = Instant.now().plus(5, ChronoUnit.MINUTES);
         
         long sequenceNo = eventTrackerService.logStageError(
-                PAGW_ID, TENANT, "SUBMISSION", EventTracker.EVENT_DOWNSTREAM_TIMEOUT,
+                PAGW_ID, TENANT, "SUBMISSION", EventTracker.EVENT_API_CON_TIMEOUT,
                 "TIMEOUT", "Downstream service timeout", true, nextRetry);
         
         assertEquals(6L, sequenceNo);
@@ -231,8 +231,8 @@ class EventTrackerServiceTest {
         
         // Mock failed retryable events
         List<EventTracker> mockEvents = Arrays.asList(
-                createFailedRetryableEvent(PAGW_ID, EventTracker.EVENT_DOWNSTREAM_TIMEOUT),
-                createFailedRetryableEvent("PAGW-20251225-00002-TEST5678", EventTracker.EVENT_DOWNSTREAM_FAIL)
+                createFailedRetryableEvent(PAGW_ID, EventTracker.EVENT_API_CON_TIMEOUT),
+                createFailedRetryableEvent("PAGW-20251225-00002-TEST5678", EventTracker.EVENT_API_CON_FAIL)
         );
         
         when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(tenant)))
