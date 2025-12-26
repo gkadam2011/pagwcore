@@ -122,21 +122,6 @@ public class PagwMessage {
     public Integer getAttachmentCount() {
         return attachmentCount != null ? attachmentCount : 0;
     }
-    
-    /**
-     * Get effective tenant with fallback logic.
-     * Checks top-level tenant first, then falls back to meta.tenant.
-     * Returns "UNKNOWN" if both are null to prevent NOT NULL violations.
-     */
-    public String getEffectiveTenant() {
-        if (tenant != null && !tenant.isBlank()) {
-            return tenant;
-        }
-        if (meta != null && meta.getTenant() != null && !meta.getTenant().isBlank()) {
-            return meta.getTenant();
-        }
-        return "UNKNOWN";
-    }
 
     /**
      * Structured S3 payload pointer.
