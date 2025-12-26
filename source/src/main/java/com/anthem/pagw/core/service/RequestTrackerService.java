@@ -561,6 +561,27 @@ public class RequestTrackerService {
     }
     
     /**
+     * Update extracted FHIR metadata fields (patient_member_id, provider_npi).
+     * Called after FHIR extraction in parser service to populate existing columns.
+     * 
+     * @param pagwId The PAGW ID
+     * @param patientMemberId Patient member ID from FHIR Patient resource
+     * @param providerNpi Provider NPI from FHIR Practitioner resource
+     */
+    @Transactional
+    public void updateFhirMetadata(String pagwId, String patientMemberId, String providerNpi) {
+        String sql = """
+            UPDATE request_tracker
+            SET patient_member_id = ?, provider_npi = ?, updated_at = NOW()
+            WHERE pagw_id = ?
+            """;
+        
+        jdbcTemplate.update(sql, patientMemberId, providerNpi, pagwId);
+        log.debug("FHIR metadata updated: pagwId={}, memberId={}, npi={}", 
+            pagwId, patientMemberId, providerNpi);
+    }
+    
+    /**
      * Get the underlying JdbcTemplate for direct SQL execution.
      * Used by microservices for custom queries not yet in the core service.
      * 
